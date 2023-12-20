@@ -7,3 +7,10 @@ def load_checkpoint(checkpoint, model, optimizer):
 
 def save_checkpoint(checkpoint, model_path):
     torch.save(checkpoint, model_path)
+
+def to_numpy_array(tensor):
+    '''Convert torch.Tensor to np.ndarray'''
+    tensor_ = tensor.cpu()
+    tensor_ = tensor_.squeeze(0)
+    tensor_ = tensor_.detach().numpy()
+    return tensor_
