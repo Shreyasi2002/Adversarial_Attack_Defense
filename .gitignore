@@ -161,3 +161,7 @@ cython_debug/
 
 .DS_Store
 */.DS_Store
+
+# Large models
+models/vgg16_fashion-mnist_model.pth
+models/vgg16_mnist_model.pth
