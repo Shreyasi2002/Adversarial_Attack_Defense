@@ -5,12 +5,9 @@ import torch
 import torchvision
 import torchvision.transforms as transforms
 import torch.optim as optim
-import torch.nn.functional as F
 import torch.nn as nn
 
 import matplotlib.pyplot as plt # plot images and graphs
-import numpy as np # linear algebra
-import pandas as pd # data processing, CSV file I/O (e.g. pd.read_csv)
 import argparse # for parsing arguments
 import time
 import os
