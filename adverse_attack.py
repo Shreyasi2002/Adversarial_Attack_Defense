@@ -2,15 +2,12 @@
 from PIL import Image
 import matplotlib.pyplot as plt  # plot graphs and images
 import numpy as np # linear algebra
-import pandas as pd # data processing, CSV file I/O (e.g. pd.read_csv)
 import argparse # for parsing arguments
 import os
 import random
 
 # PyTorch
 import torch
-import torch.nn as nn
-import torch.nn.functional as F
 from torch.autograd import Variable
 import torchvision
 import torchvision.transforms as transforms
@@ -147,13 +144,21 @@ if __name__ == '__main__':
         os.makedirs('./data')
         print('Created a data directory ...')
 
+    train = False
+    if args['attack'] == 'fgsm':
+        print('Running FGSM Attack ...')
+        train = False
+    elif args['attack'] == 'pgd':
+        print('Running PGD Attack ...')
+        train = True
+
     # Load the dataset
     if args['dataset'] == 'mnist':
-        test_dataset = torchvision.datasets.MNIST(root='./data', train=False, download=True, transform=transform)
+        test_dataset = torchvision.datasets.MNIST(root='./data', train=train, download=True, transform=transform)
         test_loader = torch.utils.data.DataLoader(test_dataset, batch_size=64, shuffle=False)
         model.load_state_dict(torch.load('./models/vgg16_mnist_model.pth'))
     elif args['dataset'] == 'fashion-mnist':
-        test_dataset = torchvision.datasets.FashionMNIST(root='./data', train=False, download=True, transform=transform)
+        test_dataset = torchvision.datasets.FashionMNIST(root='./data', train=train, download=True, transform=transform)
         test_loader = torch.utils.data.DataLoader(test_dataset, batch_size=64, shuffle=False)
         model.load_state_dict(torch.load('./models/vgg16_fashion-mnist_model.pth'))
 
