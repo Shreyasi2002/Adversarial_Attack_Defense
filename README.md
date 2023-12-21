@@ -210,6 +210,7 @@ Example Usages:
 1. `!python autoencoder.py --attack fgsm --dataset fashion-mnist --action train --use_pretrained False --epsilon 0.6 --epochs 10`
 2. `!python autoencoder.py --attack pgd --dataset mnist --action test --use_pretrained True`
 
+More details can be found here - https://www.kaggle.com/code/shreyasi2002/defense-against-adversarial-attacks-autoencoder
 
 ## Results
 The AutoEncoder successfully reconstructs the images almost similar to the original images as shown below - 
