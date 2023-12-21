@@ -1,9 +1,11 @@
 # Import libraries and packages
+from PIL import Image
 import matplotlib.pyplot as plt  # plot graphs and images
 import numpy as np # linear algebra
 import pandas as pd # data processing, CSV file I/O (e.g. pd.read_csv)
 import argparse # for parsing arguments
 import os
+import random
 
 # PyTorch
 import torch
@@ -22,15 +24,68 @@ from AElib.attacks import fgsm_attack, pgd_linf
 # Utilites
 from AElib.utils import to_numpy_array
 
-LABELS_MNIST = {}
-LABELS_FMNIST = {}
+
+LABELS_FMNIST = {0 : 'T-shirt/top', 1 : 'Trouser', 2 : 'Pullover', 
+                 3 : 'Dress', 4 : 'Coat', 5 : 'Sandal', 6 : 'Shirt', 
+                 7 : 'Sneaker', 8 : 'Bag', 9 : 'Ankle boot'}
+
+# Get two random indexes to display the images
+def get_random_index(dataset):
+    idx1 = random.randint(0, len(dataset))
+    idx2 = random.randint(0, len(dataset))
+    return idx1, idx2
+
+def plot_images(img, adv_img, label, pred, dataset, index, eps):
+    plus = Image.open('./images/plus.png')
+    plus = np.asarray(plus)
+    equals = Image.open('./images/equal.png')
+    equals = np.asarray(equals)
+
+    # plot the perturbed image and noise
+    f = plt.figure(figsize=(15, 7))
+    gs = f.add_gridspec(1, 5)
+    gs.update(wspace=0.1) 
+
+    img, adv_img = to_numpy_array(img), to_numpy_array(adv_img)
+
+    ax = f.add_subplot(gs[0, 0])
+    ax.imshow(img)
+    if dataset == 'mnist':
+        ax.set_xlabel(f"Original Image - {label}")
+    elif dataset == 'fashion-mnist':
+        ax.set_xlabel(f"Original Image - {LABELS_FMNIST[label.item()]}")
+
+    ax = f.add_subplot(gs[0, 1])
+    ax.imshow(plus)
+    ax.axis('off')
+
+    ax = f.add_subplot(gs[0, 2])
+    ax.imshow(adv_img - img)
+    ax.set_xlabel("Noise")
+
+    ax = f.add_subplot(gs[0, 3])
+    ax.imshow(equals)
+    ax.axis('off')
+
+    ax = f.add_subplot(gs[0, 4])
+    ax.imshow(adv_img)
+    if dataset == 'mnist':
+        ax.set_xlabel(f"Peturbed Image - {pred}")
+    elif dataset == 'fashion-mnist':
+        ax.set_xlabel(f"Perturbed Image - {LABELS_FMNIST[pred.item()]}")
+
+    f.savefig(f'./images/attack-{dataset}-{eps}-{index}.png', bbox_inches='tight', dpi=300)
 
 
-def applyAttack(data_loader, model, eps, attack):
+def applyAttack(device, data_loader, model, eps, attack, dataset):
     accs = []
     total = 0
     correct = 0
 
+    # get random indexes
+    idx1, idx2 = get_random_index(data_loader)
+
+    flag, index = 0, 1
     # epsilon = 0 means no attack
     if eps == 0:
         flag = 1
@@ -44,17 +99,9 @@ def applyAttack(data_loader, model, eps, attack):
         elif attack == 'pgd':
             adv_imgs, new_preds = pgd_linf(model, imgs, labels, eps, alpha=1e-2, num_iter=40, flag=flag)
         
-        # plot the perturbed image and noise
-        f = plt.figure(figsize=(15, 7))
-        gs = f.add_gridspec(1, 3)
-        gs.update(wspace=0.5) 
-
-        img, adv_img = imgs[0], adv_imgs[0]
-        img, adv_img = to_numpy_array(img), to_numpy_array(adv_img)
-
-        ax = f.add_subplot(gs[0, 1])
-        ax.imshow(adv_img)
-        ax.set_xlabel(f"Perturbed Image")
+        if i == idx1 or i == idx2:
+            plot_images(imgs[0], adv_imgs[0], labels[0], new_preds[0], dataset, index, eps)
+            index += 1
 
         correct += (new_preds==labels).sum().item()
         total += labels.size(0)
@@ -77,7 +124,7 @@ if __name__ == '__main__':
     )
     # inputs
     parser.add_argument('--attack', type=str, choices=['fgsm', 'pgd'], default='pgd', help='type of attack')
-    parser.add_argument('--dataset', type=str, choices=['mnist', 'fashion_mnist'], default='mnist', help='dataset to use')
+    parser.add_argument('--dataset', type=str, choices=['mnist', 'fashion-mnist'], default='mnist', help='dataset to use')
     parser.add_argument('--epsilon', type=float, default=0.3,
                         help='strength of the Adversarial Attack. If FGSM attack is used, keep this value in the range [0, 1]. If PGD attack is used, keep this value in the range [0, 0.3], PGD being a stronger attack ...')
 
@@ -105,11 +152,11 @@ if __name__ == '__main__':
         test_dataset = torchvision.datasets.MNIST(root='./data', train=False, download=True, transform=transform)
         test_loader = torch.utils.data.DataLoader(test_dataset, batch_size=64, shuffle=False)
         model.load_state_dict(torch.load('./models/vgg16_mnist_model.pth'))
-    elif args['dataset'] == 'fashion_mnist':
+    elif args['dataset'] == 'fashion-mnist':
         test_dataset = torchvision.datasets.FashionMNIST(root='./data', train=False, download=True, transform=transform)
         test_loader = torch.utils.data.DataLoader(test_dataset, batch_size=64, shuffle=False)
         model.load_state_dict(torch.load('./models/vgg16_fashion-mnist_model.pth'))
 
-    applyAttack(test_loader, model, args['epsilon'], args['attack'])
+    applyAttack(device, test_loader, model, args['epsilon'], args['attack'], args['dataset'])
 
 
