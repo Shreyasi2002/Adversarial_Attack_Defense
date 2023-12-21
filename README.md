@@ -217,7 +217,7 @@ The AutoEncoder successfully reconstructs the images almost similar to the origi
 <div align="center">
   <img src="./images/reconstruction_fgsm_mnist_2.png" width="80%" />
   
-  <img src="./images/reconstruction_pgd_mnist_3.png.png" width="80%" />
+  <img src="./images/reconstruction_pgd_mnist_3.png" width="80%" />
   
   Fig 6: Comparison of the adversarial image, reconstructed image and the original image
 </div>
