@@ -48,7 +48,9 @@ Adversarial attacks manipulate the input data with imperceptible perturbations, 
 that Deep Neural Network models can be manipulated into making wrong predictions by adding small perturbations to the input image.
 
 <div align="center">
-<img src="images/attack-dnn.png" width="80%"/>
+<!-- <img src="images/attack-dnn.png" width="80%"/> -->
+<img width="827" alt="attack-dnn" src="https://github.com/Shreyasi2002/Adversarial_Attack_Defense/assets/75871525/464e170e-571f-4c82-82b4-7a6ac58d01ea">
+
   
 Fig 1: Szegedy et al. were able to fool AlexNet by classifying a perturbed image of a dog into an ostrich
 </div>
@@ -59,7 +61,9 @@ The idea behind adding the noise is to perturb the latent representation by a sm
 akin to how the adversarial examples are generated in the first place.
 
 <div align="center">
-<img src="images/convAE.png" width="80%"/>
+<!-- <img src="images/convAE.png" width="80%"/> -->
+<img width="834" alt="convAE" src="https://github.com/Shreyasi2002/Adversarial_Attack_Defense/assets/75871525/b9551d9c-4e75-4c7d-8723-3f2e81e9cd05">
+
   
 Fig 2: Architecture of the proposed Convolutional AutoEncoder
 </div>
@@ -130,8 +134,9 @@ If you see an output like this, you are good to go :)
 ### Train VGG16
 VGG16 is one of the popular algorithms for image classification and is easy to use with transfer learning. 
 <div align="center">
-  <img src="./images/vgg.png" width="80%" />
-  
+<!--   <img src="./images/vgg.png" width="80%" /> -->
+  <img width="834" alt="vgg" src="https://github.com/Shreyasi2002/Adversarial_Attack_Defense/assets/75871525/150bc290-50fd-4643-848c-b086ba4ceaf0">
+
   Fig 3: VGG16 Architecture
 </div>
 
@@ -170,14 +175,16 @@ Example Usage : `!python adverse_attack.py --attack pgd --dataset fashion-mnist 
 
 The higher the `epsilon (ε)` value, the stronger is the attack. As evident from Fig 4, using large epsilon (ε) values (here 1.0) leads to corruption of the label semantics making it impossible to retrieve the original image. Hence, it is recommended to keep the ε below 1.0
 <div align="center">
-  <img src="./images/attack-mnist-1.0-1.png" width="80%" />
   
+  ![attack-mnist-1 0-1](https://github.com/Shreyasi2002/Adversarial_Attack_Defense/assets/75871525/496d7170-68fc-4f9d-ab85-95e96c01fd8d)
+
   Fig 4: FSM Attack (ε = 1.0) on the MNIST dataset
 </div>
 Since the PGD attacked adversarial examples are more natural-looking as seen in Fig 5, I have created a dataset with the adversarial examples for the MNIST Dataset. Feel free to play around with it :)
 <div align="center">
-  <img src="./images/attack-fashion-mnist-0.3-1.png" width="80%" />
-  
+
+  ![attack-fashion-mnist-0 3-1](https://github.com/Shreyasi2002/Adversarial_Attack_Defense/assets/75871525/dc7e3029-0ea1-4060-bab2-e1d790e7d7c0)
+
   Fig 5: PGD Attack (ε = 0.3) on the Fashion MNIST dataset
 </div>
 Link to Dataset - https://www.kaggle.com/datasets/shreyasi2002/corrupted-mnist 
@@ -215,13 +222,18 @@ More details can be found here - https://www.kaggle.com/code/shreyasi2002/defens
 ## Results
 The AutoEncoder successfully reconstructs the images almost similar to the original images as shown below - 
 <div align="center">
-  <img src="./images/reconstruction_fgsm_mnist_2.png" width="80%" />
-  
-  <img src="./images/reconstruction_pgd_mnist_3.png" width="80%" />
-  
+
+  ![reconstruction_fgsm_mnist_2](https://github.com/Shreyasi2002/Adversarial_Attack_Defense/assets/75871525/d2d4aa45-13dd-49ce-a51c-c956aeada10d)
+
+<!-- <img src="./images/reconstruction_pgd_mnist_3.png" width="80%" /> -->
+  ![reconstruction_pgd_mnist_3](https://github.com/Shreyasi2002/Adversarial_Attack_Defense/assets/75871525/37d4c209-a9d5-4011-a0b1-e58d55298d47)
+
   Fig 6: Comparison of the adversarial image, reconstructed image and the original image
 </div>
 The accuracy of the pre-trained VGG-16 classifier on the MNIST and Fashion-MNIST dataset with FGSM attack increases by 65.61% and 59.76% respectively. For the PGD attack, the accuracy increases by 89.88% and 43.49%. This shows the efficacy of our model in defending the adversarial attacks with high accuracy.
+<br/>
+
+<br/>
 <div align="center">
 <table>
     <thead>
